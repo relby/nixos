@@ -89,6 +89,7 @@
   # Packages that is used by every user independently
   environment.systemPackages = with pkgs; [
     gnome.gnome-tweaks
+    gcc
     vim
     git
     zip

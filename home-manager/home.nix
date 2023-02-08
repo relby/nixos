@@ -34,6 +34,8 @@
     homeDirectory = "/home/${username}";
   };
 
+  home.sessionVariables.EDITOR = "nvim";
+
   # Add stuff for your user as you see fit:
   # programs.neovim.enable = true;
   home.packages = with pkgs; [
@@ -81,15 +83,10 @@
       settings = {
         window = {
           opacity = 1;
-          title = "Alacritty";
-          dynamic_title = false;
-          class = {
-            instance = "Alacritty";
-            general = "Alacritty";
-          };
+          # Fullscreen, because startup_mode doesn't work on wayland display
           dimensions = {
-            columns = 200; # Fullscreen
-            lines = 200; # Fullscreen
+            columns = 500;
+            lines = 500;
           };
         };
         font =
@@ -108,9 +105,11 @@
 
   gtk = {
     enable = true;
-    cursorTheme = {
-      name = "Numix-Cursor";
-      package = pkgs.numix-cursor-theme;
+    gtk3.extraConfig = {
+      Settings = "gtk-application-prefer-dark-theme=1";
+    };
+    gtk4.extraConfig = {
+      Settings = "gtk-application-prefer-dark-theme=1";
     };
   };
 
