@@ -45,6 +45,7 @@
     neovim
     discord
     rustup
+    google-chrome
   ];
 
   programs = {
@@ -68,6 +69,18 @@
         git_protocol = "ssh";
       };
     };
+    btop = {
+      enable = true;
+      settings = {
+        vim_keys = true;
+      };
+    };
+    bat = {
+      enable = true;
+      config = {
+        theme = "Sublime Snazzy";
+      };
+    };
   };
 
   gtk = {
@@ -81,6 +94,21 @@
   dconf.settings = {
     "org/gnome/desktop/peripherals/touchpad" = {
       tap-to-click = true;
+    };
+    "org/gnome/desktop/input-sources" = {
+      xkb-options = [
+        "caps:ctrl_modifier"
+      ];
+    };
+    "org/gnome/desktop/wm/keybindings" = {
+      switch-to-workspace-left = [ "<Super>h" ];
+      switch-to-workspace-right = [ "<Super>l" ];
+      move-to-workspace-left = [ "<Shift><Super>h" ];
+      move-to-workspace-right = [ "<Shift><Super>l" ];
+      show-desktop = [ "<Super>d" ];
+      toggle-fullscreen = [ "<Shift><Super>f" ];
+      toggle-maximized = [ "<Super>f" ];
+      close = [ "<Super>q" ];
     };
   };
 
