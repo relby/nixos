@@ -1,8 +1,4 @@
-# This is your home-manager configuration file
-# Use this to configure your home environment (it replaces ~/.config/nixpkgs/home.nix)
-
 { inputs, username, hostname, lib, config, pkgs, ... }: {
-  # You can import other home-manager modules here
   imports = [
     # If you want to use home-manager modules from other flakes (such as nix-colors):
     # inputs.nix-colors.homeManagerModule
@@ -12,7 +8,6 @@
   ];
 
   nixpkgs = {
-    # You can add overlays here
     overlays = [
       # If you want to use overlays exported from other flakes:
       # neovim-nightly-overlay.overlays.default
@@ -79,6 +74,34 @@
       enable = true;
       config = {
         theme = "Sublime Snazzy";
+      };
+    };
+    alacritty = {
+      enable = true;
+      settings = {
+        window = {
+          opacity = 1;
+          title = "Alacritty";
+          dynamic_title = false;
+          class = {
+            instance = "Alacritty";
+            general = "Alacritty";
+          };
+          dimensions = {
+            columns = 200; # Fullscreen
+            lines = 200; # Fullscreen
+          };
+        };
+        font =
+          let family = "Hack Nerd Font Mono";
+          in
+          {
+            normal = { inherit family; style = "Regular"; };
+            bold = { inherit family; style = "Bold"; };
+            italic = { inherit family; style = "Italic"; };
+            bold_italic = { inherit family; style = "Bold Italic"; };
+            size = 18;
+          };
       };
     };
   };

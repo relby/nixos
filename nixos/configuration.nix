@@ -82,6 +82,10 @@
   ]);
   programs.dconf.enable = true;
 
+  fonts.fonts = with pkgs; [
+    (nerdfonts.override { fonts = [ "Iosevka" "Hack" ]; })
+  ];
+
   # Packages that is used by every user independently
   environment.systemPackages = with pkgs; [
     gnome.gnome-tweaks
@@ -91,6 +95,7 @@
     unzip
     wget
     tree
+    neofetch
   ];
 
   # TODO: Configure your system-wide user settings (groups, etc), add more users as needed.
