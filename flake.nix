@@ -46,5 +46,6 @@
       };
 
       ${hostname} = self.nixosConfigurations.${hostname}.config.system.build.toplevel;
+        defaultPackage.x86_64-linux = self.nixosConfigurations.${hostname}.pkgs;
     };
 }
