@@ -11,7 +11,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # TODO: Add any other flake you might need
     nixos-hardware.url = "github:nixos/nixos-hardware";
   };
 
@@ -28,8 +27,7 @@
       nixosConfigurations = {
         ${hostname} = nixpkgs.lib.nixosSystem {
           inherit system;
-          specialArgs = { inherit inputs username hostname; }; # Pass flake inputs to our config
-          # > Our main nixos configuration file <
+          specialArgs = { inherit inputs username hostname; };
           modules = [
             ./nixos/configuration.nix
             home-manager.nixosModules.home-manager
@@ -44,8 +42,5 @@
           ];
         };
       };
-
-      ${hostname} = self.nixosConfigurations.${hostname}.config.system.build.toplevel;
-        defaultPackage.x86_64-linux = self.nixosConfigurations.${hostname}.pkgs;
     };
 }
