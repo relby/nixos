@@ -63,6 +63,10 @@
 
   i18n.defaultLocale = "en_US.UTF-8";
 
+  # Users does not need to give pasword when using sudo.
+  security.sudo.wheelNeedsPassword = false;
+
+
   services.xserver = {
     enable = true;
     displayManager.gdm.enable = true;
@@ -71,41 +75,50 @@
     libinput.enable = true;
   };
 
-  environment.gnome.excludePackages = (with pkgs; [
-    gnome-photos
-    gnome-tour
-  ]) ++ (with pkgs.gnome; [
-    cheese
-    gnome-music
-    gedit
-    epiphany
-    geary
-    gnome-characters
-    tali
-    iagno
-    hitori
-    atomix
-    yelp
-    gnome-contacts
-    gnome-initial-setup
-  ]);
+  environment = {
+    variables = with pkgs; {
+      TERMINAL = "alacritty";
+      EDITOR = "nvim";
+      VISUAL = "nvim";
+      BROWSER = google-chrome.meta.mainProgram;
+    };
+    systemPackages = with pkgs; [
+      gnome.gnome-tweaks
+      gcc
+      vim
+      git
+      zip
+      unzip
+      wget
+      tree
+      neofetch
+      tailscale
+      docker
+      docker-compose
+    ];
+    gnome.excludePackages = (with pkgs; [
+      gnome-photos
+      gnome-tour
+    ]) ++ (with pkgs.gnome; [
+      cheese
+      gnome-music
+      gedit
+      epiphany
+      geary
+      gnome-characters
+      tali
+      iagno
+      hitori
+      atomix
+      yelp
+      gnome-contacts
+      gnome-initial-setup
+    ]);
+  };
   programs.dconf.enable = true;
 
   fonts.fonts = with pkgs; [
     (nerdfonts.override { fonts = [ "Iosevka" "Hack" ]; })
-  ];
-
-  # Packages that is used by every user independently
-  environment.systemPackages = with pkgs; [
-    gnome.gnome-tweaks
-    gcc
-    vim
-    git
-    zip
-    unzip
-    wget
-    tree
-    neofetch
   ];
 
   # TODO: Configure your system-wide user settings (groups, etc), add more users as needed.
@@ -125,13 +138,20 @@
 
   # This setups a SSH server. Very important if you're setting up a headless system.
   # Feel free to remove if you don't need it.
-  services.openssh = {
-    enable = true;
-    # Forbid root login through SSH.
-    permitRootLogin = "no";
-    # Use keys only. Remove if you want to SSH using password (not recommended)
-    passwordAuthentication = false;
+  services = {
+    openssh = {
+      enable = true;
+      settings = {
+        # Forbid root login through SSH.
+        PermitRootLogin = "no";
+        # Use keys only. Remove if you want to SSH using password (not recommended)
+        PasswordAuthentication = false;
+      };
+    };
+    tailscale.enable = true;
   };
+
+  virtualisation.docker.enable = true;
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   system.stateVersion = "22.11";

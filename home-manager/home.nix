@@ -1,16 +1,4 @@
-{ inputs, username, hostname, lib, config, pkgs, ... }:
-let
-  sessionVariables = with pkgs; {
-    # TODO: Figure out how to do it more nicely
-    EDITOR = neovim.meta.mainProgram;
-    VISUAL = neovim.meta.mainProgram;
-    # TODO: Since alacritty doesn't have mainProgram field
-    # Figure out how to get around it
-    TERMINAL = "alacritty"; 
-    BROWSER = google-chrome.meta.mainProgram;
-  };
-in
-{
+{ inputs, username, hostname, lib, config, pkgs, ... }: {
   imports = [
     # If you want to use home-manager modules from other flakes (such as nix-colors):
     # inputs.nix-colors.homeManagerModule
@@ -46,8 +34,6 @@ in
     homeDirectory = "/home/${username}";
   };
 
-  home.sessionVariables = sessionVariables;
-
   # Add stuff for your user as you see fit:
   # programs.neovim.enable = true;
   home.packages = with pkgs; [
@@ -56,8 +42,11 @@ in
     discord
     rustup
     google-chrome
-    docker
     tldr
+    gnumake
+    ripgrep
+    spotify
+    qbittorrent
   ];
 
   programs = {
@@ -259,12 +248,12 @@ in
     "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
       name = "Open the browser";
       binding = "<Super>b";
-      command = sessionVariables.BROWSER;
+      command = builtins.getEnv "BROWSER";
     };
     "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1" = {
       name = "Open the terminal";
       binding = "<Super>Return";
-      command = sessionVariables.TERMINAL;
+      command = builtins.getEnv "TERMINAL";
     };
   };
 
