@@ -26,6 +26,7 @@
       nixosConfigurations = {
         # FIXME replace with your hostname
         ${hostname} = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
           specialArgs = { inherit inputs username hostname; }; # Pass flake inputs to our config
           # > Our main nixos configuration file <
           modules = [ ./nixos/configuration.nix ];
