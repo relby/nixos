@@ -79,6 +79,15 @@
     gnome-music
     gedit
     epiphany
+    geary
+    gnome-characters
+    tali
+    iagno
+    hitori
+    atomix
+    yelp
+    gnome-contacts
+    gnome-initial-setup
   ]);
   programs.dconf.enable = true;
 
@@ -105,6 +114,7 @@
       # Be sure to change it (using passwd) after rebooting!
       isNormalUser = true;
       initialPassword = "password";
+      shell = pkgs.zsh;
       openssh.authorizedKeys.keys = [
         # TODO: Add your SSH public key(s) here, if you plan on using SSH to connect
       ];

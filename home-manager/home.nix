@@ -1,4 +1,16 @@
-{ inputs, username, hostname, lib, config, pkgs, ... }: {
+{ inputs, username, hostname, lib, config, pkgs, ... }:
+let
+  sessionVariables = with pkgs; {
+    # TODO: Figure out how to do it more nicely
+    EDITOR = neovim.meta.mainProgram;
+    VISUAL = neovim.meta.mainProgram;
+    # TODO: Since alacritty doesn't have mainProgram field
+    # Figure out how to get around it
+    TERMINAL = "alacritty"; 
+    BROWSER = google-chrome.meta.mainProgram;
+  };
+in
+{
   imports = [
     # If you want to use home-manager modules from other flakes (such as nix-colors):
     # inputs.nix-colors.homeManagerModule
@@ -34,15 +46,18 @@
     homeDirectory = "/home/${username}";
   };
 
-  home.sessionVariables.EDITOR = "nvim";
+  home.sessionVariables = sessionVariables;
 
   # Add stuff for your user as you see fit:
   # programs.neovim.enable = true;
   home.packages = with pkgs; [
     neovim
+    nodejs
     discord
     rustup
     google-chrome
+    docker
+    tldr
   ];
 
   programs = {
@@ -90,7 +105,7 @@
           };
         };
         font =
-          let family = "Hack Nerd Font Mono";
+          let family = "Iosevka Nerd Font";
           in
           {
             normal = { inherit family; style = "Regular"; };
@@ -101,15 +116,105 @@
           };
       };
     };
+    zsh = {
+      enable = true;
+      enableAutosuggestions = true;
+      enableSyntaxHighlighting = true;
+      defaultKeymap = "emacs";
+      # oh-my-zsh = {
+      #   enable = true; # Consider to enable it and configure
+      # };
+      # shellAliases = {
+      #   ".." = "cd ..";
+      # };
+    };
+    starship = {
+      enable = true;
+      settings = {
+        format = lib.concatStrings [
+          "$username"
+          "$hostname"
+          "$localip"
+          "$directory"
+          "$git_branch"
+          "$git_commit"
+          "$git_state"
+          "$git_metrics"
+          "$git_status"
+          "$docker_context"
+          "$c"
+          "$container"
+          "$deno"
+          "$golang"
+          "$nodejs"
+          "$python"
+          "$rust"
+          "$conda"
+          "$custom"
+          "$fill"
+          "$time"
+          "$line_break"
+          "$cmd_duration"
+          "$status"
+          "$character"
+        ];
+        add_newline = false;
+        time = {
+          disabled = false;
+          format = "[$time]($style) ";
+          time_format = "%v %R";
+        };
+        cmd_duration.format = "[$duration]($style) ";
+        # Symbols
+        c.symbol = " ";
+        git_branch.symbol = " ";
+        docker_context.symbol = " ";
+        golang.symbol = " ";
+        memory_usage.symbol = " ";
+        python.symbol = " ";
+        rust.symbol = " ";
+        fill.symbol = " ";
+      };
+    };
+    exa = {
+      enable = true;
+      enableAliases = true;
+    };
+    vscode = {
+      enable = true;
+      userSettings = {
+        # TODO: Set this as a global variable
+        "terminal.integrated.fontFamily" = "Iosevka Nerd Font";
+        "terminal.integrated.fontSize" = 18;
+        "terminal.integrated.allowChords" = false;
+        "extensions.experimental.affinity" = {
+          "asvetliakov.vscode-neovim" = 1;
+        };
+      };
+      extensions = with pkgs.vscode-extensions;
+        [
+          # General
+          asvetliakov.vscode-neovim
+          eamodio.gitlens
+          usernamehw.errorlens
+          # Rust
+          rust-lang.rust-analyzer
+          # Python
+          ms-python.python
+          # TODO: Add extensions for JS, TS
+          # Themes
+        ];
+    };
+    zoxide.enable = true;
   };
 
   gtk = {
     enable = true;
     gtk3.extraConfig = {
-      Settings = "gtk-application-prefer-dark-theme=1";
+      gtk-application-prefer-dark-theme = 1;
     };
     gtk4.extraConfig = {
-      Settings = "gtk-application-prefer-dark-theme=1";
+      gtk-application-prefer-dark-theme = 1;
     };
   };
 
@@ -132,6 +237,35 @@
       toggle-maximized = [ "<Super>f" ];
       close = [ "<Super>q" ];
     };
+    "org/gnome/desktop/interface" = {
+      color-scheme = "prefer-dark";
+    };
+    "org/gnome/shell" = {
+      favorite-apps = [
+        "Alacritty.desktop"
+        "code.desktop"
+        "google-chrome.desktop"
+        "org.gnome.Nautilus.desktop"
+        "org.gnome.Settings.desktop"
+      ];
+    };
+    # Custom shortcuts. TODO: Do it more nicely
+    "org/gnome/settings-daemon/plugins/media-keys" = {
+      custom-keybindings = [
+        "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/"
+        "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/"
+      ];
+    };
+    "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
+      name = "Open the browser";
+      binding = "<Super>b";
+      command = sessionVariables.BROWSER;
+    };
+    "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1" = {
+      name = "Open the terminal";
+      binding = "<Super>Return";
+      command = sessionVariables.TERMINAL;
+    };
   };
 
   # Nicely reload system units when changing configs
@@ -140,3 +274,4 @@
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   home.stateVersion = "22.11";
 }
+
