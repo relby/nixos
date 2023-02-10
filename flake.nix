@@ -15,7 +15,7 @@
     nixos-hardware.url = "github:nixos/nixos-hardware";
   };
 
-  outputs = inputs @ { nixpkgs, home-manager, nixos-hardware, ... }:
+  outputs = inputs @ { self, nixpkgs, home-manager, nixos-hardware, ... }:
     let
       username = "relby";
       hostname = "nixos";
@@ -24,7 +24,6 @@
       # NixOS configuration entrypoint
       # Available through 'nixos-rebuild --flake .#your-hostname'
       nixosConfigurations = {
-        # FIXME replace with your hostname
         ${hostname} = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           specialArgs = { inherit inputs username hostname; }; # Pass flake inputs to our config
@@ -44,5 +43,8 @@
           modules = [ ./home-manager/home.nix ];
         };
       };
+
+      defaultPackage.x86_64-linux = 
+        (builtins.head (builtins.attrValues self.nixosConfigurations)).pkgs;
     };
 }
