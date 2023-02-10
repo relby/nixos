@@ -19,32 +19,30 @@
     let
       username = "relby";
       hostname = "nixos";
+
+      system = "x86_64-linux";
     in
     {
       # NixOS configuration entrypoint
       # Available through 'nixos-rebuild --flake .#your-hostname'
       nixosConfigurations = {
         ${hostname} = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
+          inherit system;
           specialArgs = { inherit inputs username hostname; }; # Pass flake inputs to our config
           # > Our main nixos configuration file <
-          modules = [ ./nixos/configuration.nix ];
+          modules = [
+            ./nixos/configuration.nix
+            home-manager.nixosModules.home-manager
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.extraSpecialArgs = { inherit inputs username hostname; };
+              home-manager.users.${username} = {
+                imports = [ ./home-manager/home.nix ];
+              };
+            }
+          ];
         };
       };
-
-      # Standalone home-manager configuration entrypoint
-      # Available through 'home-manager --flake .#your-username@your-hostname'
-      homeConfigurations = {
-        # FIXME replace with your username@hostname
-        "${username}@${hostname}" = home-manager.lib.homeManagerConfiguration {
-          pkgs = nixpkgs.legacyPackages.x86_64-linux; # Home-manager requires 'pkgs' instance
-          extraSpecialArgs = { inherit inputs username hostname; }; # Pass flake inputs to our config
-          # > Our main home-manager configuration file <
-          modules = [ ./home-manager/home.nix ];
-        };
-      };
-
-      defaultPackage.x86_64-linux = 
-        (builtins.head (builtins.attrValues self.nixosConfigurations)).pkgs;
     };
 }

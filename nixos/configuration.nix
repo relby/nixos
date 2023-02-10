@@ -121,17 +121,11 @@
     (nerdfonts.override { fonts = [ "Iosevka" "Hack" ]; })
   ];
 
-  # TODO: Configure your system-wide user settings (groups, etc), add more users as needed.
   users.users = {
     ${username} = {
-      # Be sure to change it (using passwd) after rebooting!
       isNormalUser = true;
       initialPassword = "password";
       shell = pkgs.zsh;
-      openssh.authorizedKeys.keys = [
-        # TODO: Add your SSH public key(s) here, if you plan on using SSH to connect
-      ];
-      # TODO: Be sure to add any other groups you need (such as networkmanager, audio, docker, etc)
       extraGroups = [ "wheel" "networkmanager" "docker" ];
     };
   };

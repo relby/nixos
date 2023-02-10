@@ -7,47 +7,24 @@
     # ./nvim.nix
   ];
 
-  nixpkgs = {
-    overlays = [
-      # If you want to use overlays exported from other flakes:
-      # neovim-nightly-overlay.overlays.default
-
-      # Or define it inline, for example:
-      # (final: prev: {
-      #   hi = final.hello.overrideAttrs (oldAttrs: {
-      #     patches = [ ./change-hello-to-hi.patch ];
-      #   });
-      # })
-    ];
-    # Configure your nixpkgs instance
-    config = {
-      # Disable if you don't want unfree packages
-      allowUnfree = true;
-      # Workaround for https://github.com/nix-community/home-manager/issues/2942
-      allowUnfreePredicate = (_: true);
-    };
-  };
-
   # TODO: Set your username
   home = {
     inherit username;
     homeDirectory = "/home/${username}";
-  };
 
-  # Add stuff for your user as you see fit:
-  # programs.neovim.enable = true;
-  home.packages = with pkgs; [
-    neovim
-    nodejs
-    discord
-    rustup
-    google-chrome
-    tldr
-    gnumake
-    ripgrep
-    spotify
-    qbittorrent
-  ];
+    packages = with pkgs; [
+      neovim
+      nodejs
+      discord
+      rustup
+      google-chrome
+      tldr
+      gnumake
+      ripgrep
+      spotify
+      qbittorrent
+    ];
+  };
 
   programs = {
     home-manager.enable = true;
@@ -256,9 +233,6 @@
       command = builtins.getEnv "TERMINAL";
     };
   };
-
-  # Nicely reload system units when changing configs
-  systemd.user.startServices = "sd-switch";
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   home.stateVersion = "22.11";
