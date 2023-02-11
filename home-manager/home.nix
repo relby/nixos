@@ -12,7 +12,7 @@
     inherit username;
     homeDirectory = "/home/${username}";
 
-    packages = with pkgs; [
+    packages = (with pkgs; [
       neovim
       nodejs
       discord
@@ -23,7 +23,10 @@
       ripgrep
       spotify
       qbittorrent
-    ];
+    ]) ++ (with pkgs.gnomeExtensions; [
+      user-themes
+      dash-to-dock
+    ]);
   };
 
   programs = {
@@ -185,6 +188,13 @@
   };
 
   dconf.settings = {
+    "org/gnome/shell" = {
+      disable-user-extensions = false;
+      enabled-extensions = [
+        "user-theme@gnome-shell-extensions.gcampax.github.com"
+        "dash-to-dock@micxgx.gmail.com"
+      ];
+    };
     "org/gnome/desktop/peripherals/touchpad" = {
       tap-to-click = true;
     };
@@ -202,6 +212,7 @@
       toggle-fullscreen = [ "<Shift><Super>f" ];
       toggle-maximized = [ "<Super>f" ];
       close = [ "<Super>q" ];
+      minimize = [ "<Super>y" ]; # TODO: Remove it completely
     };
     "org/gnome/desktop/interface" = {
       color-scheme = "prefer-dark";
