@@ -21,6 +21,17 @@ in
     inherit username sessionVariables;
     homeDirectory = "/home/${username}";
 
+    shellAliases = {
+      gs = "git status";
+      ga = "git add";
+      gc = "git commit";
+      gd = "git diff";
+      gp = "git push";
+      gl = "git log --oneline";
+      ":q" = "exit";
+      ":qa" = "exit";
+    };
+
     packages = (with pkgs; [
       neovim
       nodejs
@@ -35,6 +46,7 @@ in
     ]) ++ (with pkgs.gnomeExtensions; [
       user-themes
       dash-to-dock
+      disable-workspace-switch-animation-for-gnome-40
     ]);
   };
 
@@ -202,6 +214,7 @@ in
       enabled-extensions = [
         "user-theme@gnome-shell-extensions.gcampax.github.com"
         "dash-to-dock@micxgx.gmail.com"
+        "instantworkspaceswitcher@amalantony.net"
       ];
     };
     "org/gnome/desktop/peripherals/touchpad" = {
