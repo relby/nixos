@@ -114,9 +114,6 @@ in
       # oh-my-zsh = {
       #   enable = true; # Consider to enable it and configure
       # };
-      # shellAliases = {
-      #   ".." = "cd ..";
-      # };
     };
     starship = {
       enable = true;
@@ -158,6 +155,10 @@ in
         # Symbols
         c.symbol = " ";
         git_branch.symbol = " ";
+        git_status = {
+            ahead =  "";
+            behind = "";
+        };
         docker_context.symbol = " ";
         golang.symbol = " ";
         memory_usage.symbol = " ";
