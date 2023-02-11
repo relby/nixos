@@ -1,4 +1,13 @@
-{ inputs, username, hostname, lib, config, pkgs, ... }: {
+{ inputs, username, hostname, lib, config, pkgs, ... }:
+let
+  sessionVariables = with pkgs; {
+    TERMINAL = "alacritty";
+    EDITOR = "nvim";
+    VISUAL = "nvim";
+    BROWSER = google-chrome.meta.mainProgram;
+  };
+in
+{
   imports = [
     # If you want to use home-manager modules from other flakes (such as nix-colors):
     # inputs.nix-colors.homeManagerModule
@@ -9,7 +18,7 @@
 
   # TODO: Set your username
   home = {
-    inherit username;
+    inherit username sessionVariables;
     homeDirectory = "/home/${username}";
 
     packages = (with pkgs; [
@@ -236,12 +245,12 @@
     "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
       name = "Open the browser";
       binding = "<Super>b";
-      command = builtins.getEnv "BROWSER";
+      command = sessionVariables.BROWSER;
     };
     "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1" = {
       name = "Open the terminal";
       binding = "<Super>Return";
-      command = builtins.getEnv "TERMINAL";
+      command = sessionVariables.TERMINAL;
     };
   };
 

@@ -76,12 +76,6 @@
   };
 
   environment = {
-    variables = with pkgs; {
-      TERMINAL = "alacritty";
-      EDITOR = "nvim";
-      VISUAL = "nvim";
-      BROWSER = google-chrome.meta.mainProgram;
-    };
     systemPackages = with pkgs; [
       gnome.gnome-tweaks
       gcc
