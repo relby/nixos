@@ -43,6 +43,8 @@ in
       ripgrep
       spotify
       qbittorrent
+      beekeeper-studio
+      just
     ]) ++ (with pkgs.gnomeExtensions; [
       user-themes
       dash-to-dock
@@ -156,8 +158,8 @@ in
         c.symbol = " ";
         git_branch.symbol = " ";
         git_status = {
-            ahead =  "";
-            behind = "";
+          ahead = "";
+          behind = "";
         };
         docker_context.symbol = " ";
         golang.symbol = " ";
