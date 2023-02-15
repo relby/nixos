@@ -28,8 +28,12 @@ in
       gd = "git diff";
       gp = "git push";
       gl = "git log --oneline";
+
       ":q" = "exit";
       ":qa" = "exit";
+
+      cat = "bat";
+      diff = "delta";
     };
 
     packages = (with pkgs; [
@@ -97,7 +101,7 @@ in
           };
         };
         font =
-          let family = "Iosevka Nerd Font";
+          let family = "CaskaydiaCove Nerd Font";# "Iosevka Nerd Font";
           in
           {
             normal = { inherit family; style = "Regular"; };

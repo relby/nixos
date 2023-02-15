@@ -112,7 +112,7 @@
   programs.dconf.enable = true;
 
   fonts.fonts = with pkgs; [
-    (nerdfonts.override { fonts = [ "Iosevka" "Hack" ]; })
+    (nerdfonts.override { fonts = [ "Iosevka" "Hack" "CascadiaCode" ]; })
   ];
 
   users.users = {
