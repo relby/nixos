@@ -125,30 +125,11 @@ in
       enable = true;
       settings = {
         format = lib.concatStrings [
-          "$username"
-          "$hostname"
-          "$localip"
-          "$directory"
-          "$git_branch"
-          "$git_commit"
-          "$git_state"
-          "$git_metrics"
-          "$git_status"
-          "$docker_context"
-          "$c"
-          "$container"
-          "$deno"
-          "$golang"
-          "$nodejs"
-          "$python"
-          "$rust"
-          "$conda"
-          "$custom"
+          "$all"
           "$fill"
           "$time"
           "$line_break"
           "$cmd_duration"
-          "$status"
           "$character"
         ];
         add_newline = false;
@@ -158,19 +139,25 @@ in
           time_format = "%v %R";
         };
         cmd_duration.format = "[$duration]($style) ";
+        directory.truncation_length = 8;
         # Symbols
-        c.symbol = " ";
         git_branch.symbol = " ";
         git_status = {
           ahead = "";
           behind = "";
         };
+
+        c.symbol = " ";
         docker_context.symbol = " ";
         golang.symbol = " ";
         memory_usage.symbol = " ";
         python.symbol = " ";
         rust.symbol = " ";
+        nix_shell.symbol = " ";
+
         fill.symbol = " ";
+        # Disabled
+        package.disabled = true;
       };
     };
     exa = {
