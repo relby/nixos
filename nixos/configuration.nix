@@ -76,6 +76,7 @@
   };
 
   environment = {
+    shells = with pkgs; [ zsh ];
     systemPackages = with pkgs; [
       gnome.gnome-tweaks
       gcc
@@ -115,11 +116,12 @@
     (nerdfonts.override { fonts = [ "Iosevka" "Hack" "CascadiaCode" ]; })
   ];
 
+  # Make zsh the default shell for every user
+  users.defaultUserShell = pkgs.zsh;
   users.users = {
     ${username} = {
       isNormalUser = true;
       initialPassword = "password";
-      shell = pkgs.zsh;
       extraGroups = [ "wheel" "networkmanager" "docker" ];
     };
   };
