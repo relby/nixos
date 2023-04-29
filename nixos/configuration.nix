@@ -66,11 +66,8 @@
   # Users does not need to give pasword when using sudo.
   security.sudo.wheelNeedsPassword = false;
 
-
   services.xserver = {
     enable = true;
-    displayManager.gdm.enable = true;
-    desktopManager.gnome.enable = true;
     layout = "us";
     libinput.enable = true;
   };
@@ -78,43 +75,16 @@
   environment = {
     shells = with pkgs; [ zsh ];
     systemPackages = with pkgs; [
-      gnome.gnome-tweaks
-      gcc
+      zsh
       vim
       git
       zip
       unzip
       wget
-      tree
       neofetch
-      tailscale
-      docker
-      docker-compose
     ];
-    gnome.excludePackages = (with pkgs; [
-      gnome-photos
-      gnome-tour
-    ]) ++ (with pkgs.gnome; [
-      cheese
-      gnome-music
-      gedit
-      epiphany
-      geary
-      gnome-characters
-      tali
-      iagno
-      hitori
-      atomix
-      yelp
-      gnome-contacts
-      gnome-initial-setup
-    ]);
   };
   programs.dconf.enable = true;
-
-  fonts.fonts = with pkgs; [
-    (nerdfonts.override { fonts = [ "Iosevka" "Hack" "CascadiaCode" ]; })
-  ];
 
   # Make zsh the default shell for every user
   users.defaultUserShell = pkgs.zsh;
@@ -125,23 +95,6 @@
       extraGroups = [ "wheel" "networkmanager" "docker" ];
     };
   };
-
-  # This setups a SSH server. Very important if you're setting up a headless system.
-  # Feel free to remove if you don't need it.
-  services = {
-    openssh = {
-      enable = true;
-      settings = {
-        # Forbid root login through SSH.
-        PermitRootLogin = "no";
-        # Use keys only. Remove if you want to SSH using password (not recommended)
-        PasswordAuthentication = false;
-      };
-    };
-    tailscale.enable = true;
-  };
-
-  virtualisation.docker.enable = true;
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   system.stateVersion = "22.11";
