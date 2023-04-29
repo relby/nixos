@@ -10,11 +10,9 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    nixos-hardware.url = "github:nixos/nixos-hardware";
   };
 
-  outputs = inputs @ { self, nixpkgs, home-manager, nixos-hardware, ... }:
+  outputs = inputs @ { self, nixpkgs, home-manager, ... }:
     let
       username = "relby";
       hostname = "nixos";
