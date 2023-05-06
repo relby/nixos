@@ -70,8 +70,15 @@
     enable = true;
     displayManager.gdm.enable = true;
     desktopManager.gnome.enable = true;
-    layout = "us";
-    libinput.enable = true;
+    layout = "us, ru";
+    xkbOptions = "ctrl:nocaps, grp:win_space_toggle";
+    libinput = {
+      enable = true;
+      touchpad = {
+        disableWhileTyping = true;
+        naturalScrolling = true;
+      };
+    };
   };
 
   environment = {

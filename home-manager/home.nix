@@ -67,6 +67,8 @@ in
       # TODO: Refactor it
       nodePackages."@nestjs/cli"
       nodePackages."pnpm"
+      eww
+      swww
     ]) ++ (with pkgs.gnomeExtensions; [
       user-themes
       dash-to-dock
@@ -212,6 +214,11 @@ in
         ];
     };
     zoxide.enable = true;
+    wofi.enable = true;
+    eww = {
+      enable = true;
+      configDir = ../dotfiles/eww;
+    };
 
     # TODO: Put that in a separate file
     # neovim = {
@@ -276,7 +283,108 @@ in
   #  recursive = true;
   # };
 
-  wayland.windowManager.hyprland.enable = true;
+  # xdg.configFile."eww" = {
+  #   source = ../dotfiles/eww;
+  #   recursive = true;
+  # };
+
+  wayland.windowManager.hyprland = {
+    enable = true;
+    xwayland = {
+      enable = true;
+      hidpi = true;
+    };
+    nvidiaPatches = false;
+    systemdIntegration = true;
+    extraConfig = ''
+      monitor = eDP-1, 1920x1080, 0x0, 1
+
+      $mod = SUPER
+      bind = $mod, Return, exec, alacritty
+      bind = $mod, Q, killactive
+
+      bind = $mod, F, fullscreen, 0
+
+      bind = ALT, H, movefocus, l
+      bind = ALT, J, movefocus, d
+      bind = ALT, K, movefocus, u
+      bind = ALT, L, movefocus, d
+
+      bind = $mod, H, workspace, -1
+      bind = $mod, L, workspace, +1
+
+      # switch workspace
+      bind = $mod, 1, workspace, 1
+      bind = $mod, 2, workspace, 2
+      bind = $mod, 3, workspace, 3
+      bind = $mod, 4, workspace, 4
+      bind = $mod, 5, workspace, 5
+      bind = $mod, 6, workspace, 6
+      bind = $mod, 7, workspace, 7
+      bind = $mod, 8, workspace, 8
+      bind = $mod, 9, workspace, 9
+      bind = $mod, 0, workspace, 10
+
+      bindm = $mod, mouse:272, movewindow
+      bindm = $mod, mouse:273, resizewindow
+
+      bind = $mod, P, exec, wofi --show drun
+
+      bind = $mod, I, exec, swww img --transition-type any --transition-fps 60 ~/wallpapers/dj-dark.png
+      bind = $mod, O, exec, swww img --transition-type any --transition-fps 60 ~/wallpapers/dj-light.png
+
+      general {
+          gaps_in = 3
+          gaps_out = 2
+          border_size = 2
+          col.active_border = rgba(33ccffee) rgba(00ff99ee) 45deg
+          col.inactive_border = rgba(595959aa)
+      }
+
+      decoration {
+          rounding = 5
+          blur = yes
+          blur_size = 3
+          blur_passes = 1
+          blur_new_optimizations = on
+          drop_shadow = no
+      }
+
+      animations {
+        enabled = true
+        bezier = myBezier, 0.05, 0.9, 0.1, 1.05
+        animation = windows, 1, 7, myBezier
+        animation = windowsOut, 1, 7, default, popin 80%
+        animation = border, 1, 10, default
+        animation = borderangle, 1, 8, default
+        animation = fade, 1, 7, default
+        animation = workspaces, 1, 6, default
+      }
+
+      input {
+        kb_layout = us, ru
+        kb_options = ctrl:nocaps, grp:win_space_toggle
+
+        touchpad {
+          natural_scroll = true
+        }
+
+        follow_mouse = 0
+      }
+
+      gestures {
+        workspace_swipe = true
+      }
+      # autostart
+      exec-once swww init && sleep 0.1 && swww img ~/wallpapers/dj-dark.png
+    '';
+  };
+
+  services = {
+    mako = {
+      enable = true;
+    };
+  };
 
   gtk = {
     enable = true;
