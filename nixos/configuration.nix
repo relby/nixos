@@ -1,34 +1,41 @@
-# This is your system's configuration file.
-# Use this to configure your system environment (it replaces /etc/nixos/configuration.nix)
+{ inputs, username, hostname, lib, config, pkgs, ... }:
+let
+  dbus-sway-environment = pkgs.writeTextFile {
+    name = "dbus-sway-environment";
+    destination = "/bin/dbus-sway-environment";
+    executable = true;
 
-{ inputs, username, hostname, lib, config, pkgs, ... }: {
-  # You can import other NixOS modules here
+    text = ''
+      dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
+      systemctl --user stop pipewire pipewire-media-session xdg-desktop-portal xdg-desktop-portal-wlr
+      systemctl --user start pipewire pipewire-media-session xdg-desktop-portal xdg-desktop-portal-wlr
+    '';
+  };
+
+  configure-gtk = pkgs.writeTextFile {
+    name = "configure-gtk";
+    destination = "/bin/configure-gtk";
+    executable = true;
+    text =
+      let
+        schema = pkgs.gsettings-desktop-schemas;
+        datadir = "${schema}/share/gsettings-schemas/${schema.name}";
+      in
+      ''
+        export XDG_DATA_DIRS=${datadir}:$XDG_DATA_DIRS
+        gnome_schema=org.gnome.desktop.interface
+        gsettings set $gnome_schema gtk-theme 'Dracula'
+      '';
+  };
+in
+{
   imports = [
-    inputs.nixos-hardware.nixosModules.common-pc-laptop
-    inputs.nixos-hardware.nixosModules.common-pc-laptop-acpi_call
-    inputs.nixos-hardware.nixosModules.common-pc-laptop-ssd
-    inputs.nixos-hardware.nixosModules.common-cpu-amd
-    inputs.nixos-hardware.nixosModules.common-gpu-amd
-
-    # You can also split up your configuration and import pieces of it here:
-    # ./users.nix
-
-    # Import your generated (nixos-generate-config) hardware configuration
     ./hardware-configuration.nix
   ];
 
   nixpkgs = {
-    # You can add overlays here
     overlays = [
-      # If you want to use overlays exported from other flakes:
-      # neovim-nightly-overlay.overlays.default
-
-      # Or define it inline, for example:
-      # (final: prev: {
-      #   hi = final.hello.overrideAttrs (oldAttrs: {
-      #     patches = [ ./change-hello-to-hi.patch ];
-      #   });
-      # })
+      inputs.nixpkgs-wayland.overlay
     ];
     config = {
       allowUnfree = true;
@@ -36,113 +43,69 @@
   };
 
   nix = {
-    # This will add each flake input as a registry
-    # To make nix3 commands consistent with your flake
-    registry = lib.mapAttrs (_: value: { flake = value; }) inputs;
-
-    # This will additionally add your inputs to the system's legacy channels
-    # Making legacy nix commands consistent as well, awesome!
-    nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry;
-
+    binaryCachePublicKeys = [
+      "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+      "nixpkgs-wayland.cachix.org-1:3lwxaILxMRkVhehr5StQprHdEo4IrE8sRho9R9HOLYA="
+    ];
+    binaryCaches = [
+      "https://cache.nixos.org"
+      "https://nixpkgs-wayland.cachix.org"
+    ];
     settings = {
       experimental-features = [ "nix-command" "flakes" ];
       auto-optimise-store = true;
     };
   };
 
-  # FIXME: Add the rest of your current configuration
-
-  # TODO: Set your hostname
   networking.hostName = hostname;
-  networking.networkmanager.enable = true;
 
-  # TODO: This is just an example, be sure to use whatever bootloader you prefer
   boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
 
-  time.timeZone = "Europe/Moscow";
-
-  i18n.defaultLocale = "en_US.UTF-8";
-
-  # Users does not need to give pasword when using sudo.
   security.sudo.wheelNeedsPassword = false;
 
-
-  services.xserver = {
-    enable = true;
-    displayManager.gdm.enable = true;
-    desktopManager.gnome.enable = true;
-    layout = "us";
-    libinput.enable = true;
-  };
-
-  environment = {
-    shells = with pkgs; [ zsh ];
-    systemPackages = with pkgs; [
-      gnome.gnome-tweaks
-      gcc
-      vim
-      git
-      zip
-      unzip
-      wget
-      tree
-      neofetch
-      tailscale
-      docker
-      docker-compose
-    ];
-    gnome.excludePackages = (with pkgs; [
-      gnome-photos
-      gnome-tour
-    ]) ++ (with pkgs.gnome; [
-      cheese
-      gnome-music
-      gedit
-      epiphany
-      geary
-      gnome-characters
-      tali
-      iagno
-      hitori
-      atomix
-      yelp
-      gnome-contacts
-      gnome-initial-setup
-    ]);
-  };
-  programs.dconf.enable = true;
-
-  fonts.fonts = with pkgs; [
-    (nerdfonts.override { fonts = [ "Iosevka" "Hack" "CascadiaCode" ]; })
+  environment.systemPackages = with pkgs; [
+    alacritty
+    sway
+    dbus-sway-environment
+    configure-gtk
+    wayland
+    xdg-utils
+    glib
+    dracula-theme
+    gnome3.adwaita-icon-theme
+    swaylock
+    swayidle
+    grim
+    slurp
+    wl-clipboard
+    bemenu
+    mako
+    wdisplays
   ];
 
-  # Make zsh the default shell for every user
-  users.defaultUserShell = pkgs.zsh;
+  services.pipewire = {
+    enable = true;
+    alsa.enable = true;
+    pulse.enable = true;
+  };
+
+  services.dbus.enable = true;
+  xdg.portal = {
+    enable = true;
+    wlr.enable = true;
+    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+  };
+
+  security.polkit.enable = true;
+
   users.users = {
     ${username} = {
       isNormalUser = true;
       initialPassword = "password";
-      extraGroups = [ "wheel" "networkmanager" "docker" ];
+      extraGroups = [ "wheel" ];
     };
   };
 
-  # This setups a SSH server. Very important if you're setting up a headless system.
-  # Feel free to remove if you don't need it.
-  services = {
-    openssh = {
-      enable = true;
-      settings = {
-        # Forbid root login through SSH.
-        PermitRootLogin = "no";
-        # Use keys only. Remove if you want to SSH using password (not recommended)
-        PasswordAuthentication = false;
-      };
-    };
-    tailscale.enable = true;
-  };
-
-  virtualisation.docker.enable = true;
-
-  # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   system.stateVersion = "22.11";
 }
