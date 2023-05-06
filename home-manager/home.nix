@@ -9,11 +9,7 @@ let
 in
 {
   imports = [
-    # If you want to use home-manager modules from other flakes (such as nix-colors):
-    # inputs.nix-colors.homeManagerModule
-
-    # You can also split up your configuration and import pieces of it here:
-    # ./nvim.nix
+    inputs.hyprland.homeManagerModules.default
   ];
 
   # TODO: Set your username
@@ -279,6 +275,8 @@ in
   #  source = ../dotfiles/nvim;
   #  recursive = true;
   # };
+
+  wayland.windowManager.hyprland.enable = true;
 
   gtk = {
     enable = true;

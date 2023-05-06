@@ -1,0 +1,28 @@
+-- I don't like notifications everywhere
+-- vim.notify = require('notify')
+-- local notify = require('notify')
+
+-- TODO: Since I don't like rounded corners I have to use these everywhere
+-- I should move it to separate file for convinience
+-- Also What the hell is FloatBorder??
+-- local border = {
+--     { "┌", "FloatBorder" },
+--     { "─", "FloatBorder" },
+--     { "┐", "FloatBorder" },
+--     { "│", "FloatBorder" },
+--     { "┘", "FloatBorder" },
+--     { "─", "FloatBorder" },
+--     { "└", "FloatBorder" },
+--     { "│", "FloatBorder" },
+-- }
+--
+-- notify.setup({
+--     fps = 60,
+--     stages = 'fade',
+--     on_open = function(win)
+--         if vim.api.nvim_win_is_valid(win) then
+--             vim.api.nvim_win_set_config(win, { border = border })
+--         end
+--     end
+-- })
+
