@@ -110,6 +110,7 @@
     ]);
   };
   programs.dconf.enable = true;
+  programs.zsh.enable = true;
 
   fonts.fonts = with pkgs; [
     (nerdfonts.override { fonts = [ "Iosevka" "Hack" "CascadiaCode" ]; })
