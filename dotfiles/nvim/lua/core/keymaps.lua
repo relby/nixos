@@ -31,6 +31,7 @@ vim.keymap.set({ 'n', 'x' }, '<Space>y', '"+y')
 -- Convenient keymaps to exit insert mode
 vim.keymap.set('i', 'kj', '<Esc>')
 vim.keymap.set('i', 'Kj', '<Esc>')
+vim.keymap.set('i', 'kJ', '<Esc>')
 vim.keymap.set('i', 'KJ', '<Esc>')
 
 -- Delete word in insert mode

@@ -11,6 +11,7 @@ telescope.setup({
                 ['<Esc>'] = actions.close,
                 ['<C-j>'] = actions.move_selection_next,
                 ['<C-k>'] = actions.move_selection_previous,
+                ['<C-f>'] = actions.select_default,
                 -- ['<C-h>'] = actions.toggle_hidden,
             },
         },
