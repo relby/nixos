@@ -12,7 +12,6 @@ in
     inputs.hyprland.homeManagerModules.default
   ];
 
-  # TODO: Set your username
   home = {
     inherit username sessionVariables;
     homeDirectory = "/home/${username}";
@@ -38,7 +37,7 @@ in
       kns = "kubens";
     };
 
-    packages = (with pkgs; [
+    packages = with pkgs; [
       neovim
       nodejs
       discord
@@ -75,11 +74,7 @@ in
       nodePackages."@nestjs/cli"
       nodePackages."pnpm"
       swww
-    ]) ++ (with pkgs.gnomeExtensions; [
-      user-themes
-      dash-to-dock
-      disable-workspace-switch-animation-for-gnome-40
-    ]);
+    ];
   };
 
   programs = {
@@ -287,9 +282,7 @@ in
     enable = true;
     xwayland = {
       enable = true;
-      # hidpi = true;
     };
-    # nvidiaPatches = false;
     systemdIntegration = true;
     extraConfig = ''
       monitor = eDP-1, 1920x1080, 0x0, 1
@@ -482,6 +475,6 @@ in
   };
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
-  home.stateVersion = "22.11";
+  home.stateVersion = "23.05";
 }
 
