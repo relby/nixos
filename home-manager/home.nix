@@ -18,12 +18,14 @@ in
     homeDirectory = "/home/${username}";
 
     shellAliases = {
+      g = "git";
       gs = "git status";
       ga = "git add";
       gc = "git commit";
       gd = "git diff";
       gp = "git push";
       gl = "git log --oneline";
+      gco = "git checkout";
 
       ":q" = "exit";
       ":qa" = "exit";
@@ -62,12 +64,16 @@ in
       yarn
       kubectl
       kubectx
+      ngrok
+      lazygit
+      lazydocker
+      wtype
+      wezterm
 
       # Nodejs packages
       # TODO: Refactor it
       nodePackages."@nestjs/cli"
       nodePackages."pnpm"
-      eww
       swww
     ]) ++ (with pkgs.gnomeExtensions; [
       user-themes
@@ -113,12 +119,9 @@ in
       enable = true;
       settings = {
         window = {
-          opacity = 1;
+          opacity = 0.95;
           # Fullscreen, because startup_mode doesn't work on wayland display
-          dimensions = {
-            columns = 500;
-            lines = 500;
-          };
+          startup_mode = "Maximized";
         };
         font =
           let family = "CaskaydiaCove Nerd Font";# "Iosevka Nerd Font";
@@ -215,10 +218,7 @@ in
     };
     zoxide.enable = true;
     wofi.enable = true;
-    eww = {
-      enable = true;
-      configDir = ../dotfiles/eww;
-    };
+    waybar.enable = true;
 
     # TODO: Put that in a separate file
     # neovim = {
@@ -283,27 +283,23 @@ in
   #  recursive = true;
   # };
 
-  # xdg.configFile."eww" = {
-  #   source = ../dotfiles/eww;
-  #   recursive = true;
-  # };
-
   wayland.windowManager.hyprland = {
     enable = true;
     xwayland = {
       enable = true;
-      hidpi = true;
+      # hidpi = true;
     };
-    nvidiaPatches = false;
+    # nvidiaPatches = false;
     systemdIntegration = true;
     extraConfig = ''
       monitor = eDP-1, 1920x1080, 0x0, 1
 
       $mod = SUPER
       bind = $mod, Return, exec, alacritty
+      bind = $mod, B, exec, google-chrome-stable
       bind = $mod, Q, killactive
 
-      bind = $mod, F, fullscreen, 0
+      bind = $mod, F, fullscreen
 
       bind = ALT, H, movefocus, l
       bind = ALT, J, movefocus, d
@@ -312,6 +308,11 @@ in
 
       bind = $mod, H, workspace, -1
       bind = $mod, L, workspace, +1
+      bind = $mod SHIFT, H, movetoworkspace, -1
+      bind = $mod SHIFT, L, movetoworkspace, +1
+
+      bind = $mod, F, fullscreen, 0
+      bind = $mod, S, togglefloating
 
       # switch workspace
       bind = $mod, 1, workspace, 1
@@ -325,13 +326,36 @@ in
       bind = $mod, 9, workspace, 9
       bind = $mod, 0, workspace, 10
 
+      bind = $mod SHIFT, 1, movetoworkspace, 1
+      bind = $mod SHIFT, 2, movetoworkspace, 2
+      bind = $mod SHIFT, 3, movetoworkspace, 3
+      bind = $mod SHIFT, 4, movetoworkspace, 4
+      bind = $mod SHIFT, 5, movetoworkspace, 5
+      bind = $mod SHIFT, 6, movetoworkspace, 6
+      bind = $mod SHIFT, 7, movetoworkspace, 7
+      bind = $mod SHIFT, 8, movetoworkspace, 8
+      bind = $mod SHIFT, 9, movetoworkspace, 9
+      bind = $mod SHIFT, 0, movetoworkspace, 10
+
       bindm = $mod, mouse:272, movewindow
       bindm = $mod, mouse:273, resizewindow
+
+      bindle = , XF86MonBrightnessUp,   exec, light -A 10
+      bindle = , XF86MonBrightnessDown, exec, light -U 10
+      bindle = , XF86AudioRaiseVolume,  exec, pactl set-sink-volume @DEFAULT_SINK@ +5%
+      bindle = , XF86AudioLowerVolume,  exec, pactl set-sink-volume @DEFAULT_SINK@ -5%
+      bind   = , XF86AudioMute,         exec, pactl set-sink-mute @DEFAULT_SINK@ toggle
+      bind   = , XF86AudioMicMute,      exec, pactl set-source-mute @DEFAULT_SOURCE@ toggle
 
       bind = $mod, P, exec, wofi --show drun
 
       bind = $mod, I, exec, swww img --transition-type any --transition-fps 60 ~/wallpapers/dj-dark.png
       bind = $mod, O, exec, swww img --transition-type any --transition-fps 60 ~/wallpapers/dj-light.png
+
+      bind = ALT CTRL, H, exec, wtype -m alt -m ctrl -P Left
+      bind = ALT CTRL, J, exec, wtype -m alt -m ctrl -P Down
+      bind = ALT CTRL, K, exec, wtype -m alt -m ctrl -P Up
+      bind = ALT CTRL, L, exec, wtype -m alt -m ctrl -P Right
 
       general {
           gaps_in = 3
@@ -358,7 +382,7 @@ in
         animation = border, 1, 10, default
         animation = borderangle, 1, 8, default
         animation = fade, 1, 7, default
-        animation = workspaces, 1, 6, default
+        animation = workspaces, 1, 1, default
       }
 
       input {
@@ -369,14 +393,16 @@ in
           natural_scroll = true
         }
 
-        follow_mouse = 0
+        follow_mouse = 1
       }
 
       gestures {
         workspace_swipe = true
       }
+
       # autostart
-      exec-once swww init && sleep 0.1 && swww img ~/wallpapers/dj-dark.png
+      exec-once = swww init
+      exec-once = waybar &
     '';
   };
 

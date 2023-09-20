@@ -81,6 +81,13 @@
     };
   };
 
+  services.dbus.enable = true;
+
+  xdg.portal = {
+    enable = true;
+    wlr.enable = true;
+  };
+
   environment = {
     shells = with pkgs; [ zsh ];
     systemPackages = with pkgs; [
@@ -96,6 +103,12 @@
       tailscale
       docker
       docker-compose
+      xdg-utils
+      xdg-desktop-portal
+      xdg-desktop-portal-wlr
+      xdg-desktop-portal-gtk
+      openssl
+      binutils
     ];
     gnome.excludePackages = (with pkgs; [
       gnome-photos
@@ -129,7 +142,7 @@
     ${username} = {
       isNormalUser = true;
       initialPassword = "password";
-      extraGroups = [ "wheel" "networkmanager" "docker" ];
+      extraGroups = [ "wheel" "networkmanager" "docker" "video" ];
     };
   };
 
@@ -149,6 +162,12 @@
   };
 
   virtualisation.docker.enable = true;
+
+  programs.light.enable = true;
+
+  console = {
+    useXkbConfig = true;
+  };
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   system.stateVersion = "22.11";
