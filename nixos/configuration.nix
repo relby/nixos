@@ -76,7 +76,7 @@
     light.enable = true;
   };
 
-  fonts.fonts = with pkgs; [
+  fonts.packages = with pkgs; [
     (nerdfonts.override { fonts = [ "Iosevka" "CascadiaCode" ]; })
   ];
 
@@ -88,7 +88,7 @@
         initialPassword = "password";
         extraGroups = [ "wheel" "docker" "audio" "video" ];
         home = "/home/${username}";
-      	shell = pkgs.zsh;
+        shell = pkgs.zsh;
       };
     };
   };

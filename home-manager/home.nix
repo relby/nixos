@@ -133,7 +133,7 @@ in
     zsh = {
       enable = true;
       enableAutosuggestions = true;
-      enableSyntaxHighlighting = true;
+      syntaxHighlighting.enable = true;
       defaultKeymap = "emacs";
       # oh-my-zsh = {
       #   enable = true; # Consider to enable it and configure
@@ -178,7 +178,7 @@ in
         package.disabled = true;
       };
     };
-    exa = {
+    eza = {
       enable = true;
       enableAliases = true;
       extraOptions = [
@@ -361,11 +361,11 @@ in
       decoration {
           rounding = 5
           blur {
-	      enabled = yes
+              enabled = yes
               size = 3
               passes = 1
               new_optimizations = on
-	  }
+          }
           drop_shadow = no
       }
 
