@@ -88,10 +88,9 @@
         initialPassword = "password";
         extraGroups = [ "wheel" "docker" "audio" "video" ];
         home = "/home/${username}";
+      	shell = pkgs.zsh;
       };
     };
-    defaultUserShell = pkgs.zsh;
-    shell = pkgs.zsh;
   };
 
   services = {
