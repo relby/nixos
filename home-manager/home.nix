@@ -360,10 +360,12 @@ in
 
       decoration {
           rounding = 5
-          blur = yes
-          blur_size = 3
-          blur_passes = 1
-          blur_new_optimizations = on
+          blur {
+	      enabled = yes
+              size = 3
+              passes = 1
+              new_optimizations = on
+	  }
           drop_shadow = no
       }
 
