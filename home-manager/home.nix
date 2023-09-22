@@ -68,6 +68,7 @@ in
       lazydocker
       wtype
       wezterm
+      pavucontrol
 
       # Nodejs packages
       # TODO: Refactor it

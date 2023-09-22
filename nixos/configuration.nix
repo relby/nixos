@@ -45,7 +45,10 @@
 
   i18n.defaultLocale = "en_US.UTF-8";
 
-  security.sudo.wheelNeedsPassword = false;
+  security = {
+    rtkit.enable = true;
+    sudo.wheelNeedsPassword = false;
+  };
 
   xdg.portal = {
     enable = true;
@@ -86,7 +89,7 @@
       ${username} = {
         isNormalUser = true;
         initialPassword = "password";
-        extraGroups = [ "wheel" "docker" "audio" "video" ];
+        extraGroups = [ "wheel" "docker" "networkmanager" "audio" "video" ];
         home = "/home/${username}";
         shell = pkgs.zsh;
       };
@@ -128,7 +131,14 @@
 
   hardware = {
     opengl.enable = true;
-    bluetooth.enable = true;
+    bluetooth = {
+      enable = true;
+      settings = {
+        General = {
+          Enable = "Source,Sink,Media,Socket";
+        };
+      };
+    };
 
     pulseaudio = {
       enable = true;
