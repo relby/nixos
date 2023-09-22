@@ -116,8 +116,10 @@
         xterm.enable = true;
       };
     };
+
     tailscale.enable = true;
     dbus.enable = true;
+    blueman.enable = true;
   };
 
   virtualisation = {
@@ -126,11 +128,20 @@
 
   hardware = {
     opengl.enable = true;
+    bluetooth.enable = true;
 
     pulseaudio = {
       enable = true;
+      package = pkgs.pulseaudioFull;
       support32Bit = true;
     };
+  };
+
+  systemd.user.services.mpris-proxy = {
+    description = "MPRIS proxy";
+    after = [ "network.target" "sound.target" ];
+    wantedBy = [ "default.target" ];
+    serviceConfig.ExecStart = "${pkgs.bluez}/bin/mpris-proxy";
   };
 
   sound.enable = true;
