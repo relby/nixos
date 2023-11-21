@@ -73,14 +73,15 @@
     hyprland = {
       enable = true;
       package = inputs.hyprland.packages.${pkgs.system}.hyprland;
-      enableNvidiaPatches = true;
+      # uncomment in unstable version
+      # enableNvidiaPatches = true;
     };
     dconf.enable = true;
     zsh.enable = true;
     light.enable = true;
   };
 
-  fonts.packages = with pkgs; [
+  fonts.fonts/*packages (for unstable)*/ = with pkgs; [
     (nerdfonts.override { fonts = [ "Iosevka" "CascadiaCode" ]; })
   ];
 

@@ -134,7 +134,9 @@ in
     zsh = {
       enable = true;
       enableAutosuggestions = true;
-      syntaxHighlighting.enable = true;
+      enableSyntaxHighlighting = true;
+      # change to that in unstable version
+      # syntaxHighlighting.enable = true;
       defaultKeymap = "emacs";
       # oh-my-zsh = {
       #   enable = true; # Consider to enable it and configure
@@ -179,7 +181,9 @@ in
         package.disabled = true;
       };
     };
-    eza = {
+    exa = {
+    # change to eza in unstable version
+    # eza = {
       enable = true;
       enableAliases = true;
       extraOptions = [
