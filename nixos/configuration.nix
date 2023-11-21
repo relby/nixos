@@ -1,16 +1,10 @@
-# This is your system's configuration file.
-# Use this to configure your system environment (it replaces /etc/nixos/configuration.nix)
-
 { inputs, username, hostname, lib, config, pkgs, ... }: {
-  # You can import other NixOS modules here
   imports = [
     inputs.nixos-hardware.nixosModules.common-pc-laptop
     inputs.nixos-hardware.nixosModules.common-pc-laptop-acpi_call
     inputs.nixos-hardware.nixosModules.common-pc-laptop-ssd
     inputs.nixos-hardware.nixosModules.common-cpu-amd
     inputs.nixos-hardware.nixosModules.common-gpu-amd
-
-    inputs.hyprland.nixosModules.default
 
     ./hardware-configuration.nix
   ];
@@ -53,6 +47,9 @@
   xdg.portal = {
     enable = true;
     wlr.enable = true;
+    extraPortals = with pkgs; [
+      xdg-desktop-portal-wlr
+    ];
   };
 
   environment = {
@@ -64,16 +61,20 @@
       zip
       unzip
       wget
-      curl
-      neofetch
-      xdg-utils
-      xdg-desktop-portal
-      xdg-desktop-portal-wlr
-      xdg-desktop-portal-gtk
     ];
+    sessionVariables = {
+      WLR_NO_HARDWARE_CURSORS = "1";
+      NIXOS_OZONE_WL = "1";
+    };
+    pathsToLink = [ "/libexec" ];
   };
 
   programs = {
+    hyprland = {
+      enable = true;
+      package = inputs.hyprland.packages.${pkgs.system}.hyprland;
+      enableNvidiaPatches = true;
+    };
     dconf.enable = true;
     zsh.enable = true;
     light.enable = true;
@@ -116,7 +117,15 @@
         };
       };
       desktopManager = {
-        xterm.enable = true;
+        xterm.enable = false;
+      };
+
+      displayManager = {
+        defaultSession = "hyprland";
+        lightdm.enable = false;
+        gdm = {
+          enable = true;
+        };
       };
     };
 
@@ -147,13 +156,16 @@
         };
       };
     };
+    nvidia.modesetting.enable = true;
   };
 
-  systemd.user.services.mpris-proxy = {
-    description = "MPRIS proxy";
-    after = [ "network.target" "sound.target" ];
-    wantedBy = [ "default.target" ];
-    serviceConfig.ExecStart = "${pkgs.bluez}/bin/mpris-proxy";
+  systemd.user = {
+    services.mpris-proxy = {
+      description = "MPRIS proxy";
+      after = [ "network.target" "sound.target" ];
+      wantedBy = [ "default.target" ];
+      serviceConfig.ExecStart = "${pkgs.bluez}/bin/mpris-proxy";
+    };
   };
 
   environment.etc = {
