@@ -75,6 +75,7 @@
       package = inputs.hyprland.packages.${pkgs.system}.hyprland;
       # uncomment in unstable version
       # enableNvidiaPatches = true;
+      nvidiaPatches = true;
     };
     dconf.enable = true;
     zsh.enable = true;
