@@ -54,7 +54,7 @@ in
       neovim
       tdesktop
       insomnia
-      postman
+      # postman
       jq
       xclip
       feh
